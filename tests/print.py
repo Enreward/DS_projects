@@ -155,23 +155,77 @@ def square_solve(a, b, c):
 # print(new_encod(input()))
 
 # 12
-def mass_index(data):
-    output = {}
-    for i in data:
-        output[i] = i[0] / (i[1]**2)
-    return output
-# (вес, рост)
-data = [
-   (82, 191),
-   (68, 174),
-   (90, 189),
-   (73, 179),
-   (76, 184)
-]
-list_of_indexes = mass_index(data)
-print(sorted(list_of_indexes.items(), key=lambda x: x[1]))
-sorted_list = sorted(data, key=lambda x: x[0] / (x[1]**2))
-print(sorted_list)
-print(sorted_list[0])
+# def mass_index(data):
+#     output = {}
+#     for i in data:
+#         output[i] = i[0] / (i[1]**2)
+#     return output
+# # (вес, рост)
+# data = [
+#    (82, 191),
+#    (68, 174),
+#    (90, 189),
+#    (73, 179),
+#    (76, 184)
+# ]
+# list_of_indexes = mass_index(data)
+# print(sorted(list_of_indexes.items(), key=lambda x: x[1]))
+# sorted_list = sorted(data, key=lambda x: x[0] / (x[1]**2))
+# print(sorted_list)
+# print(sorted_list[0])
 # 13
+import numpy as np
 
+
+def game_core(number):
+    '''
+    Алгоритм основан на идее бинарного поиска.
+    Т.к. алгоритм работает с упорядоченной последовательностью чисел от 1 до 100
+    нам не нужно предварительно выполнять сортировку.
+    Алгоритм бинарного поиска был взят за основы по причине медленного
+    уменьшения скорости поиска при увеличении числа входных данных.
+    Так, при 1000 и 1000000 входных данных алгоритм отрабатывает в среднем за 6 попыток.
+    Так же, при увеличении диапазона поиска загаданного числа,
+    в худшем случае количество попыток увеличивается всего на 3-4 единицы.
+
+    Устанавливаем левую границу head равной 1,
+    правую границу tail равной 101 (на единицу больше чем максимально возможное искомое число)
+    Устанавливаем проверяемое число как середнее значений head и tail.
+    Если проверяемое число больше искомого - устанавливаем tail как искомое,
+    если меньше - устанавливаем head как искомое,
+    иначе завершаем цикл - искомое число найдено.
+
+    Функция принимает загаданное число и возвращает число попыток
+    '''
+    
+    count = 0
+    head = 1
+    tail = 101
+    for count in range(1, tail // 2 + 1):
+        count += 1
+        predict = (head + tail) // 2
+        if predict > number:
+            tail = predict
+        elif predict < number:
+            head = predict
+        else:
+            break  # выход из цикла, если угадали
+    return count
+
+
+def score_game(game_core):
+    '''
+        Запускаем игру 1000 раз, чтобы узнать, как быстро игра угадывает число
+    '''
+    
+    count_ls = []
+    #     np.random.seed(1)  # фиксируем RANDOM SEED, чтобы ваш эксперимент был воспроизводим!
+    random_array = np.random.randint(1, 101, size=100000)
+    for number in random_array:
+        count_ls.append(game_core(number))
+    score = int(np.mean(count_ls))
+    return score
+
+
+score = score_game(game_core)
+print(f"Ваш алгоритм угадывает число в среднем за {score} попыток")
