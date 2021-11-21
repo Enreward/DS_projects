@@ -1,2 +1,2 @@
-# DS_projects
-Итоговые проекты курса Data Science
+﻿# DS_projects
+Итоговые проекты курса Data Science 
